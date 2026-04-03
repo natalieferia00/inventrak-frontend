@@ -1,0 +1,31 @@
+:root {
+  --bg-main: #0D1117;
+  --bg-card: #161B22;
+  --primary-cyan: #0DFDFF;
+  --accent-yellow: #F1C40F;
+  --accent-red: #FF4B4B;
+  --text-dim: #8B949E;
+  --border-color: #30363D;
+}
+
+* {
+  box-sizing: border-box;
+  font-family: 'Inter', sans-serif;
+}
+
+body {
+  margin: 0;
+  background-color: var(--bg-main);
+  color: white;
+  overflow-x: hidden;
+}
+
+/* Animación de entrada suave */
+.animate-fade {
+  animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}

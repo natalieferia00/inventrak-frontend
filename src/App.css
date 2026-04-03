@@ -1,0 +1,134 @@
+.app-container {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* SIDEBAR */
+.sidebar {
+  width: 240px;
+  background: var(--bg-card);
+  border-right: 1px solid var(--border-color);
+  padding: 2rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.logo-section h1 {
+  color: var(--primary-cyan);
+  font-size: 1.5rem;
+  letter-spacing: -1px;
+  margin-bottom: 2rem;
+}
+
+.nav-links {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  flex-grow: 1;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0.8rem 1rem;
+  color: var(--text-dim);
+  text-decoration: none;
+  border-radius: 6px;
+  transition: 0.3s;
+}
+
+.nav-item:hover, .nav-item.active {
+  background: #21262D;
+  color: var(--primary-cyan);
+}
+
+/* MAIN CONTENT */
+.main-content {
+  flex: 1;
+  padding: 2rem;
+  background-image: radial-gradient(circle at top right, #161b22 0%, #0d1117 100%);
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.stat-card {
+  background: var(--bg-card);
+  padding: 1.5rem;
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+/* TABLAS */
+.table-card {
+  background: var(--bg-card);
+  border-radius: 12px;
+  padding: 1rem;
+  border: 1px solid var(--border-color);
+}
+
+.inventory-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.inventory-table th {
+  text-align: left;
+  color: var(--text-dim);
+  padding: 1rem;
+  font-size: 0.85rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.inventory-table td {
+  padding: 1rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+/* BADGES */
+.badge {
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  font-weight: bold;
+}
+.badge.ok { background: rgba(46, 204, 113, 0.2); color: #2ecc71; }
+.badge.low { background: rgba(231, 76, 60, 0.2); color: #e74c3c; }
+
+/* FORMS */
+.form-card {
+  background: var(--bg-card);
+  padding: 1.5rem;
+  border-radius: 12px;
+  border: 1px dotted var(--primary-cyan);
+}
+
+.input-group label { display: block; margin-bottom: 5px; color: var(--text-dim); font-size: 0.8rem; }
+input, select {
+  width: 100%;
+  background: var(--bg-main);
+  border: 1px solid var(--border-color);
+  padding: 10px;
+  color: white;
+  margin-bottom: 1rem;
+  border-radius: 6px;
+}
+
+.btn-primary {
+  background: var(--primary-cyan);
+  color: black;
+  border: none;
+  padding: 12px;
+  font-weight: bold;
+  border-radius: 6px;
+  cursor: pointer;
+  width: 100%;
+}
