@@ -1,108 +1,46 @@
-import React, { useState } from 'react';
-import axios from 'axios';
-import { Edit3, Trash2, PackagePlus } from 'lucide-react';
+import React from 'react';
+import { Pencil, Trash2 } from 'lucide-react'; // Importa los iconos correctamente
 
-const API = 'https://inventrak-backend.onrender.com/api';
-
-const ProductsView = ({ products, categories, onRefresh }) => {
-  const [editing, setEditing] = useState(null);
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const data = Object.fromEntries(new FormData(e.target));
-    
-    try {
-      if (editing) {
-        await axios.put(`${API}/products/${editing.id}`, data);
-      } else {
-        await axios.post(`${API}/products`, data);
-      }
-      setEditing(null);
-      onRefresh();
-      e.target.reset();
-      alert("¡Operación exitosa!");
-    } catch (err) {
-      alert("Error al guardar: " + (err.response?.data?.error || err.message));
-    }
-  };
-
+const ProductsView = ({ products, onEdit, onDelete }) => {
   return (
-    <div className="dashboard-grid animate-fade">
-      <section className="table-card">
-        <h3><PackagePlus size={20}/> Maestro de Artículos</h3>
-        <table className="inventory-table">
-          <thead>
-            <tr>
-              <th>SKU</th>
-              <th>Nombre</th>
-              <th>Stock</th>
-              <th>Acciones</th>
+    <div className="card-table">
+      <h2>📦 MAESTRO DE ARTÍCULOS</h2>
+      
+      <table className="table-cyberpunk">
+        <thead>
+          <tr>
+            <th className="col-sku">SKU</th>
+            <th className="col-nombre">NOMBRE</th>
+            <th className="col-descripcion">DESCRIPCIÓN</th> {/* <- La columna que faltaba */}
+            <th className="col-stock">STOCK</th>
+            <th className="col-acciones">ACCIONES</th>
+          </tr>
+        </thead>
+        <tbody>
+          {products.map((product) => (
+            <tr key={product.id}>
+              <td className="col-sku">{product.sku}</td>
+              <td className="col-nombre">{product.name}</td>
+              
+              {/* <- Mostramos la descripción (o un guion si está vacía) */}
+              <td className="col-descripcion">
+                {product.description ? product.description : '—'}
+              </td>
+              
+              <td className="col-stock">{product.current_stock}</td>
+              
+              <td className="col-acciones">
+                <button className="action-btn edit" onClick={() => onEdit(product)}>
+                  <Pencil size={18} />
+                </button>
+                <button className="action-btn trash" onClick={() => onDelete(product.id)}>
+                  <Trash2 size={18} />
+                </button>
+              </td>
             </tr>
-          </thead>
-          <tbody>
-            {products.map(p => (
-              <tr key={p.id}>
-                <td>{p.sku}</td>
-                <td>{p.name}</td>
-                <td>
-                  <span className={`badge ${p.current_stock <= p.min_stock_level ? 'low' : 'ok'}`}>
-                    {p.current_stock || 0}
-                  </span>
-                </td>
-                <td>
-                  <button className="action-btn" onClick={() => setEditing(p)}>
-                    <Edit3 size={16}/>
-                  </button>
-                  <button className="action-btn delete" onClick={async () => {
-                    if(window.confirm("¿Estás seguro de eliminar este producto?")) {
-                      await axios.delete(`${API}/products/${p.id}`);
-                      onRefresh();
-                    }
-                  }}>
-                    <Trash2 size={16}/>
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </section>
-
-      <aside className="form-card">
-        <h4>{editing ? 'Editar Registro' : '+ Nuevo SKU'}</h4>
-        <form onSubmit={handleSubmit}>
-          <input name="sku" placeholder="SKU (Único)" defaultValue={editing?.sku} required />
-          <input name="name" placeholder="Nombre del producto" defaultValue={editing?.name} required />
-          <input name="description" placeholder="Descripción (Opcional)" defaultValue={editing?.description} />
-          
-          <select name="category_id" defaultValue={editing?.category_id || ""} required>
-            <option value="" disabled>Seleccionar Categoría</option>
-            {categories?.map(c => (
-              <option key={c.id} value={c.id}>{c.name}</option>
-            ))}
-          </select>
-          
-          <div className="form-group">
-            <label>Precio Unitario</label>
-            <input name="unit_price" type="number" step="0.01" placeholder="0.00" defaultValue={editing?.unit_price} required />
-          </div>
-
-          <div className="form-group">
-            <label>Stock Mínimo</label>
-            <input name="min_stock_level" type="number" placeholder="5" defaultValue={editing?.min_stock_level} required />
-          </div>
-
-          <button type="submit" className="btn-primary">
-            {editing ? 'GUARDAR CAMBIOS' : 'REGISTRAR PRODUCTO'}
-          </button>
-          
-          {editing && (
-            <button type="button" className="btn-secondary" onClick={() => setEditing(null)} style={{marginTop: '10px'}}>
-              CANCELAR
-            </button>
-          )}
-        </form>
-      </aside>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 };

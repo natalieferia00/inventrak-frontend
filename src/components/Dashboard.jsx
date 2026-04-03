@@ -1,52 +1,93 @@
 import React from 'react';
-import { LayoutDashboard, Package, AlertCircle, CheckCircle, TrendingUp } from 'lucide-react';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { Package, Layers, DollarSign, AlertTriangle, Activity } from 'lucide-react';
 
-const Dashboard = ({ products }) => {
-  const totalSkus = products.length;
-  const lowStock = products.filter(p => p.current_stock <= p.min_stock_level && p.current_stock > 0);
-  const outOfStock = products.filter(p => p.current_stock === 0);
-  const totalValue = products.reduce((acc, p) => acc + (p.current_stock * (p.unit_price || 0)), 0);
+const Dashboard = ({ products, categories }) => {
+  // Cálculos lógicos
+  const totalProducts = products.length;
+  const totalCategories = categories.length;
+  const totalStock = products.reduce((acc, p) => acc + (p.current_stock || 0), 0);
+  const lowStockProducts = products.filter(p => p.current_stock <= p.min_stock_level).length;
 
-  const barData = [...products]
-    .sort((a, b) => b.current_stock - a.current_stock)
-    .slice(0, 6)
-    .map(p => ({ name: p.name, stock: p.current_stock }));
+  // Cálculo de porcentaje de stock (ejemplo basado en una meta de 1000 unidades)
+  const stockGoal = 1000;
+  const stockPercentage = Math.min(Math.round((totalStock / stockGoal) * 100), 100);
 
   return (
-    <div className="view-container animate-fade">
-      <h2 className="view-title"><LayoutDashboard size={24}/> Panel de Control</h2>
-      
-      <div className="stats-grid">
-        <div className="stat-card">
-          <Package size={20} color="#0DFDFF"/>
-          <div><span>Total SKUs</span><h3>{totalSkus}</h3></div>
-        </div>
-        <div className="stat-card accent-warning">
-          <AlertCircle size={20} color="#F1C40F"/>
-          <div><span>Stock Bajo</span><h3>{lowStock.length}</h3></div>
-        </div>
-        <div className="stat-card accent-danger">
-          <TrendingUp size={20} color="#FF4B4B"/>
-          <div><span>Agotados</span><h3>{outOfStock.length}</h3></div>
-        </div>
-        <div className="stat-card accent-success">
-          <CheckCircle size={20} color="#2ecc71"/>
-          <div><span>Valor Activos</span><h3>${totalValue.toLocaleString()}</h3></div>
-        </div>
+    <div className="dashboard-container">
+      <div className="welcome-msg">
+        <p>Terminal de Control v1.0.4</p>
+        <h2>Panel de Inventario</h2>
       </div>
 
-      <div className="chart-container">
-        <h4>Top 6 Existencias en Almacén</h4>
-        <ResponsiveContainer width="100%" height={250}>
-          <BarChart data={barData}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#30363D" vertical={false} />
-            <XAxis dataKey="name" stroke="#8B949E" fontSize={10} />
-            <YAxis stroke="#8B949E" fontSize={10} />
-            <Tooltip contentStyle={{ background: '#161B22', border: '1px solid #30363D' }} />
-            <Bar dataKey="stock" fill="#0DFDFF" radius={[4, 4, 0, 0]} />
-          </BarChart>
-        </ResponsiveContainer>
+      <div className="dashboard-grid">
+        
+        {/* Card 1: Total Productos */}
+        <div className="kpi-card">
+          <h3>Total Productos</h3>
+          <div className="kpi-value">{totalProducts}</div>
+          <div className="kpi-unit">SKUs Registrados</div>
+          <div className="progress-container">
+             <div className="progress-bar high" style={{ width: '100%' }}></div>
+          </div>
+          <Package className="card-icon-bg" size={80} />
+        </div>
+
+        {/* Card 2: Stock Total con Barra Dinámica */}
+        <div className="kpi-card">
+          <h3>Stock Total</h3>
+          <div className="kpi-value">{totalStock}</div>
+          <div className="kpi-unit">Capacidad: {stockPercentage}%</div>
+          <div className="progress-container">
+             <div 
+                className={`progress-bar ${stockPercentage > 50 ? 'high' : 'medium'}`} 
+                style={{ width: `${stockPercentage}%` }}
+             ></div>
+          </div>
+          <Layers className="card-icon-bg" size={80} />
+        </div>
+
+        {/* Card 3: Categorías */}
+        <div className="kpi-card">
+          <h3>Categorías</h3>
+          <div className="kpi-value">{totalCategories}</div>
+          <div className="kpi-unit">Segmentos Activos</div>
+          <div className="progress-container">
+             <div className="progress-bar high" style={{ width: '100%', opacity: 0.5 }}></div>
+          </div>
+          <DollarSign className="card-icon-bg" size={80} />
+        </div>
+
+        {/* Card 4: Alertas Críticas (Barra Magenta) */}
+        <div className="kpi-card danger">
+          <h3>Alertas de Stock</h3>
+          <div className="kpi-value" style={{ color: '#ff00ff' }}>{lowStockProducts}</div>
+          <div className="kpi-unit">Requieren Acción</div>
+          <div className="progress-container">
+             <div 
+                className="progress-bar low" 
+                style={{ width: lowStockProducts > 0 ? '100%' : '0%' }}
+             ></div>
+          </div>
+          <AlertTriangle className="card-icon-bg" size={80} />
+        </div>
+
+      </div>
+
+      <div className="dashboard-lower-section">
+        <div className="activity-card">
+          <div className="card-header">
+            <Activity size={20} color="#00f2ff" />
+            <h3>Estado del Sistema</h3>
+          </div>
+          <div className="activity-item">
+            <span>Base de Datos Railway:</span>
+            <span className="status-text">CONECTADO</span>
+          </div>
+          <div className="activity-item">
+            <span>Sincronización Render:</span>
+            <span className="status-text">OPTIMA</span>
+          </div>
+        </div>
       </div>
     </div>
   );
